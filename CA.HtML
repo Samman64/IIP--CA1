@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Campus Shelf — Book Exchange</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f7f5ed; color: #18302f; font: 16px/1.6 Arial, sans-serif; }
+    header, main, footer { width: min(1000px, 92%); margin: auto; }
+    header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; padding: 18px 0; }
+    header strong { color: #176b55; font-size: 1.3rem; }
+    nav { display: flex; gap: 8px; flex-wrap: wrap; }
+    nav button, button { border: 0; border-radius: 8px; padding: 10px 15px; background: #176b55; color: white; font-weight: bold; cursor: pointer; }
+    nav button:hover, button:hover { background: #10513f; }
+    nav button { background: transparent; color: #79e1c5; }
+    nav button.active, nav button:hover { background: #e4eee6; }
+    main { padding: 25px 0 50px; }
+    .hero, .panel, .card { padding: 24px; border: 1px solid #e3e4d9; border-radius: 16px; background: #fffefa; }
+    .hero { background: #e6efe5; padding: 40px; }
+    .page { display: none; }
+    .page.active { display: block; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 20px 0; }
+    .card { transition: background-color .2s; }
+    .tag { display: inline-block; padding: 3px 10px; border-radius: 20px; background: #edf2e8; color: #10513f; font-size: .85rem; }
+    .muted { color: #5b6c68; }
+    .panel { margin-top: 20px; max-width: 700px; }
+    label { display: block; margin: 12px 0 4px; font-weight: bold; }
+    input, select { width: 100%; padding: 10px; border: 1px solid #cfd6ce; border-radius: 7px; font: inherit; }
+    .message { min-height: 25px; color: #10513f; font-weight: bold; }
+    .hidden { display: none !important; }
+    footer { padding: 20px 0; border-top: 1px solid #e3e4d9; color: #5b6c68; }
+    @media (max-width: 600px) { header { align-items: flex-start; gap: 12px; } .hero { padding: 25px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <strong>Campus Shelf</strong>
+    <nav aria-label="Main navigation">
+      <button class="active" data-page="home">Home</button>
+      <button data-page="books">Browse Books</button>
+      <button data-page="listing">List a Book</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="home" class="page active">
+      <div class="hero">
+        <p class="tag">Read more. Share more.</p>
+        <h1 id="welcome-heading">Good books deserve another chapter.</h1>
+        <p class="muted">Campus Shelf helps students share, exchange, and discover books within the campus community.</p>
+        <button id="change-heading">Change heading</button>
+      </div>
+      <h2>Featured books</h2>
+      <button id="change-color">Change a featured card colour</button>
+      <button id="toggle-featured">Hide featured books</button>
+      <div id="featured-books" class="grid">
+        <article class="card"><span class="tag">Computer Science</span><h3>Introduction to Algorithms</h3><p class="muted">Author: Thomas H. Cormen</p></article>
+        <article class="card"><span class="tag">Literature</span><h3>The Namesake</h3><p class="muted">Author: Jhumpa Lahiri</p></article>
+        <article class="card"><span class="tag">Biology</span><h3>The Selfish Gene</h3><p class="muted">Author: Richard Dawkins</p></article>
+      </div>
+    </section>
+
+    <section id="books" class="page">
+      <h1>Browse Books</h1>
+      <p class="muted">Explore books available to exchange or share with other students.</p>
+      <div class="grid" id="available-books">
+        <article class="card"><span class="tag">Computer Science</span><h3>Clean Code</h3><p class="muted">Author: Robert C. Martin<br>Condition: Very good</p><button class="request">Mark as Requested</button><p class="message"></p></article>
+        <article class="card"><span class="tag">Economics</span><h3>Freakonomics</h3><p class="muted">Author: Steven D. Levitt<br>Condition: Good</p><button class="request">Mark as Requested</button><p class="message"></p></article>
+        <article class="card"><span class="tag">Physics</span><h3>Six Easy Pieces</h3><p class="muted">Author: Richard P. Feynman<br>Condition: Like new</p><button class="request">Mark as Requested</button><p class="message"></p></article>
+        <article class="card" id="book-to-change"><span class="tag">Psychology</span><h3>Thinking, Fast and Slow</h3><p class="muted">Author: Daniel Kahneman<br>Condition: Good</p><button class="request">Mark as Requested</button><p class="message"></p></article>
+      </div>
+      <div class="panel">
+        <label for="search-title">Enter a book title</label>
+        <input id="search-title" type="text" placeholder="e.g. The Great Gatsby">
+        <button id="show-book">Show Book</button>
+        <button id="change-book-card">Change a book card</button>
+        <p id="book-result" class="message" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <section id="listing" class="page">
+      <h1>List a Book</h1>
+      <div class="panel">
+        <h2 id="form-heading">Your book listing</h2>
+        <button id="change-font">Change heading font size</button>
+        <button id="toggle-form">Hide form</button>
+        <form id="listing-form">
+          <div id="form-fields">
+            <label for="student-name">Student Name</label><input id="student-name" required>
+            <label for="book-title">Book Title</label><input id="book-title" required>
+            <label for="author">Author</label><input id="author" required>
+            <label for="category">Subject/Category</label><input id="category" required>
+            <label for="condition">Book Condition</label>
+            <select id="condition" required>
+              <option value="">Choose a condition</option>
+              <option>Like new</option><option>Very good</option><option>Good</option><option>Well used</option>
+            </select>
+            <p><button type="submit">Submit Listing</button></p>
+          </div>
+        </form>
+        <p id="form-message" class="message" aria-live="polite"></p>
+      </div>
+    </section>
+  </main>
+
+  <footer>A student-powered book exchange for our campus community.</footer>
+
+  <script>
+    document.querySelectorAll("nav button").forEach(button => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".page").forEach(page => page.classList.remove("active"));
+        document.querySelectorAll("nav button").forEach(item => item.classList.remove("active"));
+        document.getElementById(button.dataset.page).classList.add("active");
+        button.classList.add("active");
+      });
+    });
+
+    document.getElementById("change-heading").addEventListener("click", () => {
+      document.getElementById("welcome-heading").textContent = "Your next chapter starts here!";
+    });
+
+    document.getElementById("change-color").addEventListener("click", () => {
+      const card = document.querySelector("#featured-books .card");
+      card.style.backgroundColor = card.style.backgroundColor === "rgb(255, 243, 214)" ? "#fffefa" : "#fff3d6";
+    });
+
+    document.getElementById("toggle-featured").addEventListener("click", event => {
+      const books = document.getElementById("featured-books");
+      const hidden = books.classList.toggle("hidden");
+      event.currentTarget.textContent = hidden ? "Show featured books" : "Hide featured books";
+    });
+
+    document.querySelectorAll(".request").forEach(button => {
+      button.addEventListener("click", () => {
+        button.textContent = "Request Sent";
+        button.disabled = true;
+        button.nextElementSibling.textContent = "Your request has been sent.";
+      });
+    });
+
+    document.getElementById("show-book").addEventListener("click", () => {
+      const title = document.getElementById("search-title").value.trim();
+      document.getElementById("book-result").textContent = title
+        ? "Book title: " + title + " — your title has been displayed."
+        : "Please enter a book title.";
+    });
+
+    document.getElementById("change-book-card").addEventListener("click", () => {
+      const card = document.getElementById("book-to-change");
+      card.style.backgroundColor = card.style.backgroundColor === "rgb(230, 239, 229)" ? "#fffefa" : "#e6efe5";
+    });
+
+    document.getElementById("listing-form").addEventListener("submit", event => {
+      event.preventDefault();
+      const name = document.getElementById("student-name").value.trim();
+      const title = document.getElementById("book-title").value.trim();
+      const author = document.getElementById("author").value.trim();
+      const category = document.getElementById("category").value.trim();
+      const condition = document.getElementById("condition").value;
+      document.getElementById("form-message").textContent =
+        name && title && author && category && condition
+          ? "Thanks, " + name + "! Your listing for “" + title + "” is ready to share."
+          : "Please complete every field before submitting.";
+    });
+
+    document.getElementById("change-font").addEventListener("click", () => {
+      const heading = document.getElementById("form-heading");
+      heading.style.fontSize = heading.style.fontSize === "2.5rem" ? "" : "2.5rem";
+    });
+
+    document.getElementById("toggle-form").addEventListener("click", event => {
+      const fields = document.getElementById("form-fields");
+      const hidden = fields.classList.toggle("hidden");
+      event.currentTarget.textContent = hidden ? "Show form" : "Hide form";
+    });
+  </script>
+</body>
+</html>
